@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Entity @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
+@Table(name = "videos")
 public class Video {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

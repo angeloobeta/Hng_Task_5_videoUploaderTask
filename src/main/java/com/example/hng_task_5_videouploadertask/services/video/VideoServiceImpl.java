@@ -20,7 +20,7 @@ public class VideoServiceImpl implements  VideoService{
     @Autowired
     private VideoRepository videoRepository;
 
-    @Value("${video.upload.path}") // Configure the path where videos will be saved on the file system
+//    @Value("${video.upload.path}") // Configure the path where videos will be saved on the file system
     private String uploadPath;
 
     @Transactional
