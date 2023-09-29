@@ -29,7 +29,6 @@ public class VideoServiceImpl implements  VideoService{
 //    @Value("${video.upload.path}") // Configure the path where videos will be saved on the file system
     private String uploadPath;
 
-
     @Transactional
     public ApiResponseDto<VideoResponseDto> uploadVideo(MultipartFile file) throws IOException {
         // Check if the upload directory exists; create it if not
@@ -56,13 +55,21 @@ public class VideoServiceImpl implements  VideoService{
         video.setFileUrl(filePath); // You can adjust the URL structure as needed
 
         // Save the video metadata to the database
-        VideoRequestDto videoData = VideoRequestDto.builder()
-                .fileSize(file.getSize())
-                .fileName(file.getName())
-                .timeStamp(LocalDateTime.now())
+        Video videoData = Video.builder()
+                .fileSize(String.valueOf(file.getSize()))
+                .filename(file.getName())
+                .timestamp(LocalDateTime.now())
                 .fileUrl(file.getOriginalFilename())
                 .build();
-        return new ApiResponseDto<>("Upload successfully", 200, videoRepository.save(videoData));
+        Video videoUploaded = videoRepository.save(videoData);
+        VideoResponseDto videoRequestDto = VideoResponseDto.builder()
+                .downloadUrl(videoUploaded.getFileUrl())
+                .timeStamp(videoUploaded.getTimestamp())
+                .fileName(videoUploaded.getFilename())
+                .fileSize(videoUploaded.getFileSize())
+                .build();
+
+        return new ApiResponseDto<>("Upload successfully", 200, videoRequestDto);
     }
 
     public ApiResponseDto<VideoResponseDto> getVideoById(String id) {
