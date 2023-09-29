@@ -4,6 +4,8 @@ import com.example.hng_task_5_videouploadertask.data.dto.response.VideoResponseD
 import com.example.hng_task_5_videouploadertask.data.entity.Video;
 import com.example.hng_task_5_videouploadertask.data.repositories.VideoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component @RequiredArgsConstructor
@@ -18,4 +20,6 @@ public class VideoUtils {
                 .fileSize(video.getFileSize())
                 .build();
     }
+
+//    public ResponseEntity<Resource> downloadVideo(){}
 }

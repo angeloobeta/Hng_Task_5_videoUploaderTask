@@ -25,5 +25,9 @@ public class Video {
 
     private String fileSize;
 
+    @Lob
+    private byte[] data;
+
+
 }
 
