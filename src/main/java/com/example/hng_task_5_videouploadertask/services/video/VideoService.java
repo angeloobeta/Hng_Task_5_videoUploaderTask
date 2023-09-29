@@ -1,6 +1,7 @@
 package com.example.hng_task_5_videouploadertask.services.video;
 
-import com.example.hng_task_5_videouploadertask.data.entity.Video;
+import com.example.hng_task_5_videouploadertask.data.dto.response.ApiResponseDto;
+import com.example.hng_task_5_videouploadertask.data.dto.response.VideoResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -9,14 +10,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface VideoService {
-    Video uploadVideo(MultipartFile file) throws IOException;
+    VideoResponseDto uploadVideo(MultipartFile file) throws IOException;
 
-    Optional<Video> getVideoById(Long id);
+    ApiResponseDto<VideoResponseDto> getVideoById(String id);
 
-    List<Video> getAllVideos();
+    ApiResponseDto<List<VideoResponseDto>> getAllVideos();
 
-    List<Video> findByTimestampAfter(LocalDateTime timeStamp);
+    ApiResponseDto<List<VideoResponseDto>> findByTimestampAfter(LocalDateTime timeStamp);
 
 
-    List<Video> findByFileName(String fileName);
+    ApiResponseDto<List<VideoResponseDto>> findByFileName(String fileName);
 }

@@ -1,29 +1,29 @@
 package com.example.hng_task_5_videouploadertask.data.entity;
 
-import com.example.hng_task_5_videouploadertask.services.video.VideoService;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 @Entity @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
-@Table(name = "videos")
+//@Table(name = "videos")
 public class Video {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
 
     @Column(nullable = false)
     private String filename;
 
     @Column(nullable = false)
-    private String url;
+    private String fileUrl;
 
     @Column(nullable = false)
     private LocalDateTime timestamp;
+
+    private String fileSize;
 
 }
 
