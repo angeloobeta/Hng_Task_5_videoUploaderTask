@@ -17,9 +17,10 @@ public class CloudinaryServiceImpl implements CloudService {
     private final Cloudinary cloudinary;
 
     @Override
-    public String upload(MultipartFile image) {
+    public String uploadFile(MultipartFile file) {
         try {
-            Map<?, ?> response = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
+            Map<?, ?> response = cloudinary.uploader().uploadLarge(file.getBytes(), ObjectUtils.emptyMap());
+            System.out.println("Uploaded file now");
             return response.get("url").toString();
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());

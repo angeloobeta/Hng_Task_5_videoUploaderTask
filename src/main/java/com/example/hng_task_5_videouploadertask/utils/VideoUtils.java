@@ -7,10 +7,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Component @RequiredArgsConstructor
 public class VideoUtils {
-
     public VideoResponseDto mapVideoToDto(Video video){
         return VideoResponseDto.builder()
                 .timeStamp(video.getTimestamp())
@@ -22,4 +27,9 @@ public class VideoUtils {
     }
 
 //    public ResponseEntity<Resource> downloadVideo(){}
+
+    public byte[] downloadVideo(String fileName) throws IOException {
+//        byte [] videoFile = Files.readAllBytes(new File("lsnshhs/jshs").toPath());
+        return Files.readAllBytes(new File("lsnshhs/jshs").toPath());
+    }
 }

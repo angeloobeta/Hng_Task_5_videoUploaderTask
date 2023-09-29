@@ -7,7 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
 
 @Entity @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
-//@Table(name = "videos")
+@Table(name = "videos")
 public class Video {
     @Id
     @GeneratedValue(generator = "uuid")
@@ -25,8 +25,6 @@ public class Video {
 
     private String fileSize;
 
-    @Lob
-    private byte[] data;
 
 
 }

@@ -32,7 +32,7 @@ public class VideoController {
     private final VideoRepository videoRepository;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadVideo(@RequestParam("fileName") MultipartFile fileName) {
+    public ResponseEntity<?> uploadVideo(@RequestParam("fileName") MultipartFile[] fileName) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(videoService.uploadVideo(fileName));
         } catch (IOException e) {
@@ -60,20 +60,13 @@ public class VideoController {
         return ResponseEntity.ok(videoService.findByTimestampAfter(timeStamp));
     }
 
-//    @GetMapping("/downloadVideo/{fileId}")
-//    public ResponseEntity<?> downloadVideo(@PathVariable String fileId){
-//       ApiResponseDto<VideoResponseDto> video =  videoService.getVideoById(fileId);
-//        downloadUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-//                .path("/download")
-//                .path(video.getMessage()).toUriString();
-//    }
-
     @GetMapping("/downloadVideo/{fileId}")
     public ResponseEntity<?> downloadVideoFile(@PathVariable String fileId){
         Optional<Video> videoResponseDto = videoRepository.findById(fileId);
 
-        return (ResponseEntity<?>) ResponseEntity.ok().contentType(MediaType.parseMediaType(videoResponseDto.get().getFilename()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename = \"" + videoResponseDto.get().getFilename())
-                .body(new ByteArrayResource(videoResponseDto.get().getData()));
+        return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.parseMediaType(videoResponseDto.get().getFilename()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename = \"" + videoResponseDto.get().getFilename());
+//                .body(new ByteArrayResource(videoResponseDto.get().getData()));
     }
 }

@@ -6,6 +6,7 @@ import com.example.hng_task_5_videouploadertask.data.dto.response.VideoResponseD
 import com.example.hng_task_5_videouploadertask.data.entity.Video;
 import com.example.hng_task_5_videouploadertask.data.repositories.VideoRepository;
 import com.example.hng_task_5_videouploadertask.exceptions.VideoException;
+import com.example.hng_task_5_videouploadertask.services.cloud.CloudService;
 import com.example.hng_task_5_videouploadertask.utils.VideoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,43 +29,43 @@ public class VideoServiceImpl implements  VideoService{
 
     private final VideoRepository videoRepository;
     private final VideoUtils videoUtils;
+    private final CloudService cloudService;
 
 //    @Value("${video.upload.path}") // Configure the path where videos will be saved on the file system
     private String uploadPath;
 
     @Transactional
-    public ApiResponseDto<VideoResponseDto> uploadVideo(MultipartFile file) throws IOException {
-        // Check if the upload directory exists; create it if not
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
+    public ApiResponseDto<List<VideoResponseDto>> uploadVideo(  MultipartFile[] file) throws IOException {
+
+        //
+        List<VideoResponseDto> videoResponseDtoList = new ArrayList<>();
+        for(MultipartFile multipartFile : file){
+            String filename = cloudService.uploadFile(multipartFile);
+            // Generate a unique filename for the video
+        String uploadedFileUrl = LocalDateTime.now() + "_" + StringUtils.cleanPath(filename);
+
+
+            // Save the video metadata to the database
+            Video videoData = Video.builder()
+                    .fileSize(String.valueOf(multipartFile.getSize()))
+                    .filename(multipartFile.getName())
+                    .timestamp(LocalDateTime.now())
+                    .fileUrl(uploadedFileUrl)
+                    .build();
+            Video videoUploaded = videoRepository.save(videoData);
+            VideoResponseDto videoResponseDto = VideoResponseDto.builder()
+                    .downloadUrl(videoUploaded.getFileUrl())
+                    .timeStamp(videoUploaded.getTimestamp())
+                    .fileName(videoUploaded.getFilename())
+                    .fileSize(videoUploaded.getFileSize())
+                    .build();
+
+            assert false;
+            videoResponseDtoList.add(videoResponseDto);
         }
 
-        // Generate a unique filename for the video
-        String filename = LocalDateTime.now() + "_" + StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
-
-        // Save the video file to the specified upload directory on the file system
-        String filePath = uploadPath + File.separator + filename;
-        File dest = new File(filePath);
-        file.transferTo(dest);
-
-        // Save the video metadata to the database
-        Video videoData = Video.builder()
-                .fileSize(String.valueOf(file.getSize()))
-                .filename(file.getName())
-                .timestamp(LocalDateTime.now())
-                .fileUrl(file.getOriginalFilename())
-                .build();
-        Video videoUploaded = videoRepository.save(videoData);
-        VideoResponseDto videoRequestDto = VideoResponseDto.builder()
-                .downloadUrl(videoUploaded.getFileUrl())
-                .timeStamp(videoUploaded.getTimestamp())
-                .fileName(videoUploaded.getFilename())
-                .fileSize(videoUploaded.getFileSize())
-                .build();
-
-        return new ApiResponseDto<>("Upload successfully", 200, videoRequestDto);
+        return new ApiResponseDto<>("Upload successfully", 200, videoResponseDtoList);
     }
 
     public ApiResponseDto<VideoResponseDto> getVideoById(String id) {
