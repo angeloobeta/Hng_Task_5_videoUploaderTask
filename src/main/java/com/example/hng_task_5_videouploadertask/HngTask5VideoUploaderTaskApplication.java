@@ -25,7 +25,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
                         description = "DEV Server"
                 ),
                 @Server(
-                        url = "https://liquid-food-backend-production.up.railway.app",
+                        url = "https://hng-video-servers.onrender.com",
                         description = "PROD server"
                 )
         }
