@@ -18,8 +18,14 @@ public class CloudinaryServiceImpl implements CloudService {
 
     @Override
     public String uploadFile(MultipartFile file) {
+        Map params = ObjectUtils.asMap(
+                "public_id", "HngVideos/myfolder/" + file.getOriginalFilename(),
+                "overwrite", false,
+//                "notification_url", "https://mysite.com/notify_endpoint",
+                "resource_type", "video"
+        );
         try {
-            Map<?, ?> response = cloudinary.uploader().uploadLarge(file.getBytes(), ObjectUtils.emptyMap());
+            Map<?, ?> response = cloudinary.uploader().uploadLarge(file.getBytes(), params);
             System.out.println("Uploaded file now");
             return response.get("url").toString();
         } catch (IOException e) {

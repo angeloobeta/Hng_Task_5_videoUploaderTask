@@ -1,6 +1,5 @@
 package com.example.hng_task_5_videouploadertask.services.video;
 
-import com.example.hng_task_5_videouploadertask.data.dto.payload.VideoRequestDto;
 import com.example.hng_task_5_videouploadertask.data.dto.response.ApiResponseDto;
 import com.example.hng_task_5_videouploadertask.data.dto.response.VideoResponseDto;
 import com.example.hng_task_5_videouploadertask.data.entity.Video;
@@ -9,19 +8,16 @@ import com.example.hng_task_5_videouploadertask.exceptions.VideoException;
 import com.example.hng_task_5_videouploadertask.services.cloud.CloudService;
 import com.example.hng_task_5_videouploadertask.utils.VideoUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,16 +27,14 @@ public class VideoServiceImpl implements  VideoService{
     private final VideoUtils videoUtils;
     private final CloudService cloudService;
 
-//    @Value("${video.upload.path}") // Configure the path where videos will be saved on the file system
-    private String uploadPath;
-
     @Transactional
-    public ApiResponseDto<List<VideoResponseDto>> uploadVideo(  MultipartFile[] file) throws IOException {
+    public ApiResponseDto<List<VideoResponseDto>> uploadVideo(MultipartFile[] UploadedVideos) throws IOException {
 
         //
         List<VideoResponseDto> videoResponseDtoList = new ArrayList<>();
-        for(MultipartFile multipartFile : file){
+        for(MultipartFile multipartFile : UploadedVideos){
             String filename = cloudService.uploadFile(multipartFile);
+            System.out.println("This is the name of the file that was uploaded:  ===>  " + filename);
             // Generate a unique filename for the video
         String uploadedFileUrl = LocalDateTime.now() + "_" + StringUtils.cleanPath(filename);
 
@@ -48,19 +42,19 @@ public class VideoServiceImpl implements  VideoService{
             // Save the video metadata to the database
             Video videoData = Video.builder()
                     .fileSize(String.valueOf(multipartFile.getSize()))
-                    .filename(multipartFile.getName())
+                    .filename(multipartFile.getOriginalFilename())
                     .timestamp(LocalDateTime.now())
                     .fileUrl(uploadedFileUrl)
                     .build();
             Video videoUploaded = videoRepository.save(videoData);
             VideoResponseDto videoResponseDto = VideoResponseDto.builder()
-                    .downloadUrl(videoUploaded.getFileUrl())
+                    .fileUrl(videoUploaded.getFileUrl())
+                    .fileId(videoUploaded.getId())
                     .timeStamp(videoUploaded.getTimestamp())
                     .fileName(videoUploaded.getFilename())
                     .fileSize(videoUploaded.getFileSize())
                     .build();
 
-            assert false;
             videoResponseDtoList.add(videoResponseDto);
         }
 

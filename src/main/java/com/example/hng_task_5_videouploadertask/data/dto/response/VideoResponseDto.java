@@ -10,6 +10,6 @@ public class VideoResponseDto {
     private String fileId;
     private LocalDateTime timeStamp;
     private String fileSize;
-    private String downloadUrl;
+    private String fileUrl;
 
 }
