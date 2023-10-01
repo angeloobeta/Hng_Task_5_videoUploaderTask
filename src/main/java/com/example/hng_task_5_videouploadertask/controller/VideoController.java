@@ -27,6 +27,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/video")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class VideoController {
     private final VideoService videoService;
