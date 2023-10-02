@@ -2,7 +2,7 @@ package com.example.hng_task_5_videouploadertask.services.video;
 
 import com.example.hng_task_5_videouploadertask.data.dto.response.ApiResponseDto;
 import com.example.hng_task_5_videouploadertask.data.dto.response.VideoResponseDto;
-import com.example.hng_task_5_videouploadertask.data.entity.Video;
+import com.example.hng_task_5_videouploadertask.data.entities.Video;
 import com.example.hng_task_5_videouploadertask.data.repositories.VideoRepository;
 import com.example.hng_task_5_videouploadertask.exceptions.VideoException;
 import com.example.hng_task_5_videouploadertask.services.cloud.CloudService;
@@ -30,7 +30,6 @@ public class VideoServiceImpl implements  VideoService{
     @Transactional
     public ApiResponseDto<List<VideoResponseDto>> uploadVideo(MultipartFile[] UploadedVideos) throws IOException {
 
-        //
         List<VideoResponseDto> videoResponseDtoList = new ArrayList<>();
         for(MultipartFile multipartFile : UploadedVideos){
             String filename = cloudService.uploadFile(multipartFile);
@@ -59,7 +58,7 @@ public class VideoServiceImpl implements  VideoService{
         }
 
 
-        return new ApiResponseDto<>("Upload successfully", 200, videoResponseDtoList);
+        return new ApiResponseDto<>("Upload successfully", 200,null);
     }
 
     public ApiResponseDto<VideoResponseDto> getVideoById(String id) {

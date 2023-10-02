@@ -1,9 +1,11 @@
 package com.example.hng_task_5_videouploadertask.utils;
 
 import com.example.hng_task_5_videouploadertask.data.dto.response.VideoResponseDto;
-import com.example.hng_task_5_videouploadertask.data.entity.Video;
+import com.example.hng_task_5_videouploadertask.data.entities.Video;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import ws.schild.jave.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,4 +29,5 @@ public class VideoUtils {
 //        byte [] videoFile = Files.readAllBytes(new File("lsnshhs/jshs").toPath());
         return Files.readAllBytes(new File("lsnshhs/jshs").toPath());
     }
+
 }

@@ -1,6 +1,6 @@
 package com.example.hng_task_5_videouploadertask.data.repositories;
 
-import com.example.hng_task_5_videouploadertask.data.entity.Video;
+import com.example.hng_task_5_videouploadertask.data.entities.Video;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

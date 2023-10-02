@@ -1,4 +1,4 @@
-package com.example.hng_task_5_videouploadertask.data.entity;
+package com.example.hng_task_5_videouploadertask.data.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
