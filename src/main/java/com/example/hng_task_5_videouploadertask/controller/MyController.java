@@ -21,8 +21,7 @@ public class MyController {
         CreateTranscriptionRequest request = CreateTranscriptionRequest.builder()
                 .model("whisper-1")
                 .build();
-//        request.setModel("whisper-1");
         File file = new File(filePath);
-        return service.createTranscription(request,file).getText();
+        return service.createTranscription(request,filePath).getText();
     }
 }
