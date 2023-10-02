@@ -58,7 +58,7 @@ public class VideoServiceImpl implements  VideoService{
         }
 
 
-        return new ApiResponseDto<>("Upload successfully", 200,null);
+        return new ApiResponseDto<>("Upload successfully", 200,videoResponseDtoList);
     }
 
     public ApiResponseDto<VideoResponseDto> getVideoById(String id) {
