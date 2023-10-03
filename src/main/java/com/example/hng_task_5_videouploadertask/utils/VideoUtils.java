@@ -4,9 +4,10 @@ import com.example.hng_task_5_videouploadertask.data.dto.response.VideoResponseD
 import com.example.hng_task_5_videouploadertask.data.entities.Video;
 import com.theokanning.openai.audio.CreateTranscriptionRequest;
 import com.theokanning.openai.service.OpenAiService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,8 +20,6 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class VideoUtils {
-//    @Value("${openai.api.key}")
-    private static final String apiKey = null;
     public VideoResponseDto mapVideoToDto(Video video){
         return VideoResponseDto.builder()
                 .timeStamp(video.getTimestamp())
@@ -28,6 +27,7 @@ public class VideoUtils {
                 .fileId(String.valueOf(video.getId()))
                 .fileName(video.getFilename())
                 .fileSize(video.getFileSize())
+                .transcription(video.getTranscriptionText())
                 .build();
     }
 
@@ -65,18 +65,21 @@ public class VideoUtils {
             }
 
             System.out.println("Video uploaded successfully");
+//            System.out.println(beanConfig.apiKey);
             return videoPath;
         }
 
 
-//        public static String transcribeVideo(String videoPath) {
-//        // pass the api key
-//            OpenAiService service = new OpenAiService(apiKey);
-//            CreateTranscriptionRequest request = CreateTranscriptionRequest.builder()
-//                    .model("whisper-1")
-//                    .build();
-//            File file = new File(videoPath);
-//            String transcriptionSrtFile = service.createTranscription(request,file).getText();
+        public static String transcribeVideo(String videoPath) {
+        // pass the api key transcription
+//            OpenAiService service = new OpenAiService(beanConfig.apiKey);
+            OpenAiService service = new OpenAiService("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");
+            CreateTranscriptionRequest request = CreateTranscriptionRequest.builder()
+                    .model("whisper-1")
+                    .build();
+            File file = new File(videoPath);
+            //            String transcriptionSrtFile = service.createTranscription(request,file).getText();
+            // store transcription file
 //            String transcriptFilename = Paths.get(videoPath).getFileName().toString().replaceFirst("[.][^.]+$", "") + ".srt";
 //            String transcriptPath = Paths.get("UploadedVideosDirectory", transcriptFilename).toString();
 //
@@ -85,8 +88,8 @@ public class VideoUtils {
 //            } catch (IOException e) {
 //                throw new RuntimeException(e);
 //            }
-//            return transcriptFilename;
-//        }
+            return service.createTranscription(request,file).getText();
+        }
 
     }
 

@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 @Table(name = "videos")
 public class Video {
     @Id
-//    @GeneratedValue(generator = "uuid")
-//    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+//    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private String id;
 
     @Column(nullable = false)
     private String filename;
@@ -32,6 +32,7 @@ public class Video {
     private LocalDateTime timestamp;
 
     private String fileSize;
+    @Column(columnDefinition = "TEXT")
     private String transcriptionText;
 }
 
