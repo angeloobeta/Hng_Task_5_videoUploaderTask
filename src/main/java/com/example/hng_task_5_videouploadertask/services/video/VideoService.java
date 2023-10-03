@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface VideoService {
    ApiResponseDto <List<VideoResponseDto>> uploadVideo(MultipartFile[] file) throws IOException;
 
-    ApiResponseDto<VideoResponseDto> getVideoById(String id);
+    ApiResponseDto<VideoResponseDto> getVideoById(Long id);
 
     ApiResponseDto<List<VideoResponseDto>> getAllVideos();
 

@@ -11,5 +11,6 @@ public class VideoResponseDto {
     private LocalDateTime timeStamp;
     private String fileSize;
     private String fileUrl;
+    private String transcription;
 
 }

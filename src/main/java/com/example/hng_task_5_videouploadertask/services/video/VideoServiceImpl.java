@@ -13,10 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static com.example.hng_task_5_videouploadertask.utils.VideoUtils.saveVideoToDisk;
 
 
 @Service
@@ -25,18 +30,30 @@ public class VideoServiceImpl implements  VideoService{
 
     private final VideoRepository videoRepository;
     private final VideoUtils videoUtils;
-    private final CloudService cloudService;
 
     @Transactional
     public ApiResponseDto<List<VideoResponseDto>> uploadVideo(MultipartFile[] UploadedVideos) throws IOException {
 
-        List<VideoResponseDto> videoResponseDtoList = new ArrayList<>();
-        for(MultipartFile multipartFile : UploadedVideos){
-            String filename = cloudService.uploadFile(multipartFile);
-            System.out.println("This is the name of the file that was uploaded:  ===>  " + filename);
-            // Generate a unique filename for the video
-        String uploadedFileUrl = LocalDateTime.now() + "_" + StringUtils.cleanPath(filename);
 
+        List<VideoResponseDto> videoResponseDtoList = new ArrayList<>();
+        String savedVideoFilePath = null;
+
+        // Save video to disk
+        for(MultipartFile multipartFile : UploadedVideos){
+            System.out.println("Uploading : "+ multipartFile.getOriginalFilename() + "to the server ");
+            try {
+                savedVideoFilePath = saveVideoToDisk(multipartFile.getInputStream(), multipartFile.getOriginalFilename());
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("An Error occurred while writing video file to disk");
+            }
+
+            // Generate a unique filename for the video
+            assert savedVideoFilePath != null;
+            String uploadedFileUrl = StringUtils.cleanPath(savedVideoFilePath);
+
+        // Transcribe the video
+//            String videoTrancription = VideoUtils.transcribeVideo(savedVideoFilePath);
 
             // Save the video metadata to the database
             Video videoData = Video.builder()
@@ -44,14 +61,16 @@ public class VideoServiceImpl implements  VideoService{
                     .filename(multipartFile.getOriginalFilename())
                     .timestamp(LocalDateTime.now())
                     .fileUrl(uploadedFileUrl)
+//                    .transcriptionText(videoTrancription)
                     .build();
             Video videoUploaded = videoRepository.save(videoData);
             VideoResponseDto videoResponseDto = VideoResponseDto.builder()
                     .fileUrl(videoUploaded.getFileUrl())
-                    .fileId(videoUploaded.getId())
+                    .fileId(String.valueOf(videoUploaded.getId()))
                     .timeStamp(videoUploaded.getTimestamp())
                     .fileName(videoUploaded.getFilename())
                     .fileSize(videoUploaded.getFileSize())
+                    .transcription(videoUploaded.getTranscriptionText())
                     .build();
 
             videoResponseDtoList.add(videoResponseDto);
@@ -61,8 +80,8 @@ public class VideoServiceImpl implements  VideoService{
         return new ApiResponseDto<>("Upload successfully", 200,videoResponseDtoList);
     }
 
-    public ApiResponseDto<VideoResponseDto> getVideoById(String id) {
-        Video response = videoRepository.findById(id)
+    public ApiResponseDto<VideoResponseDto> getVideoById(Long id) {
+        Video response = videoRepository.findVideoById(id)
                 .orElseThrow(() -> new VideoException("Video doesn't exist"));
 //        VideoResponseDto videoResponse = VideoResponseDto.builder()
 //                .fileSize(response.getFileSize())

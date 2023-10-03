@@ -36,7 +36,7 @@ public class VideoController {
             description = "Returns an ApiResponse Response entity containing successful message of the uploaded video/videos with details")
     public ResponseEntity<?> uploadVideo(
             @RequestPart("file")
-            @RequestParam(value = "fileName")
+//            @RequestParam(value = "fileName")
             MultipartFile[] fileName) {
         if (fileName[0].isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body("You must select a file!");
@@ -56,7 +56,7 @@ public class VideoController {
     @GetMapping("/{fileId}")
     @Operation(summary = "Get a video by its unique_id",
             description = "Returns an ApiResponse Response entity containing a the detail of a video")
-    public ResponseEntity<?> getVideo(@RequestParam String fileId) {
+    public ResponseEntity<?> getVideo(@PathVariable Long fileId) {
         return ResponseEntity.ok(videoService.getVideoById(fileId));
     }
 
