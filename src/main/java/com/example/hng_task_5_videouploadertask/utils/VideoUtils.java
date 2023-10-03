@@ -73,7 +73,7 @@ public class VideoUtils {
         public static String transcribeVideo(String videoPath) {
         // pass the api key transcription
 //            OpenAiService service = new OpenAiService(beanConfig.apiKey);
-            OpenAiService service = new OpenAiService("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");
+            OpenAiService service = new OpenAiService("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");
             CreateTranscriptionRequest request = CreateTranscriptionRequest.builder()
                     .model("whisper-1")
                     .build();
